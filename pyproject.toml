@@ -1,0 +1,21 @@
+[project]
+name = "hyperoot"
+version = "0.1.0"
+description = "A CLI persona app that presents my work, projects, and engineering mindset directly in the terminal."
+readme = "README.md"
+authors = [{ name = "hyperoot", email = "rajesh@hyperoot.dev" }]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+hyperoot = "hyperoot:main"
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+    "ty>=0.0.5",
+]
