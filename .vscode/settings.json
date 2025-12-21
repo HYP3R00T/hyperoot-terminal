@@ -39,12 +39,16 @@
   "chat.instructionsFilesLocations": {
     ".github/instructions": true
   },
-  "python.defaultInterpreterPath": "./.venv/bin/python",
-  "python.languageServer": "None",
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "ruff.interpreter": [
+    "${workspaceFolder}/.venv/bin/python"
+  ],
+  "ruff.lint.enable": true,
+  "ruff.nativeServer": true,
   "ruff.path": [
-    ".venv/bin/ruff"
+    "${workspaceFolder}/.venv/bin/ruff"
   ],
   "ty.path": [
-    ".venv/bin/ty"
+    "${workspaceFolder}/.venv/bin/ty"
   ]
 }
