@@ -395,9 +395,9 @@ ruff==0.14.11 \
     --hash=sha256:f6dc463bfa5c07a59b1ff2c3b9767373e541346ea105503b4c0369c520a66958 \
     --hash=sha256:f6ff2d95cbd335841a7217bdfd9c1d2e44eac2c584197ab1385579d55ff8830e \
     --hash=sha256:f981cea63d08456b2c070e64b79cb62f951aa1305282974d4d5216e6e0178ae6
-textual==6.11.0 \
-    --hash=sha256:08237ebda0cfbbfd1a4e2fd3039882b35894a73994f6f0fcc12c5b0d78acf3cc \
-    --hash=sha256:9e663b73ed37123a9b13c16a0c85e09ef917a4cfded97814361ed5cccfa40f89
+textual==7.2.0 \
+    --hash=sha256:2624077f02dbd504beea9a24a943770f954f500a5f29a0bfa83465c52fa3ea1c \
+    --hash=sha256:5355f2dc16fbdc452a714dee2e440125e33b82373b3032cb53bea96e7019fa0b
     # via
     #   hyperoot
     #   textual-dev
