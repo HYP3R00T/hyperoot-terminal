@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A CLI persona app that presents my work, projects, and engineering mindset directly in the terminal."
 readme = "README.md"
 authors = [{ name = "hyperoot", email = "rajesh@hyperoot.dev" }]
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = ["textual>=6.11.0"]
 
 [project.scripts]
@@ -15,4 +15,10 @@ requires = ["uv_build>=0.9.18,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["pytest>=9.0.2", "ruff>=0.14.10", "textual-dev>=1.8.0", "ty>=0.0.5"]
+dev = [
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+    "ruff>=0.14.10",
+    "textual-dev>=1.8.0",
+    "ty>=0.0.5",
+]
