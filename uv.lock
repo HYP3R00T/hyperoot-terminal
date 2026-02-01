@@ -4,7 +4,6 @@ requires-python = ">=3.13"
 
 [manifest]
 members = [
-    "hyperoot",
     "hyperoot-terminal",
     "rajeshdas",
 ]
@@ -37,16 +36,10 @@ wheels = [
 ]
 
 [[package]]
-name = "hyperoot"
-version = "0.1.0"
-source = { editable = "packages/hyperoot" }
-
-[[package]]
 name = "hyperoot-terminal"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "hyperoot" },
     { name = "rajeshdas" },
 ]
 
@@ -58,10 +51,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "hyperoot", editable = "packages/hyperoot" },
-    { name = "rajeshdas", editable = "packages/rajeshdas" },
-]
+requires-dist = [{ name = "rajeshdas", editable = "packages/rajeshdas" }]
 
 [package.metadata.requires-dev]
 dev = [
