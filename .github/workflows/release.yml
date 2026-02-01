@@ -1,0 +1,198 @@
+name: Release CostCutter Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_component:
+        description: "Version component to bump (optional if already pre-release)"
+        required: false
+        type: choice
+        default: "none"
+        options:
+          - none
+          - patch
+          - minor
+          - major
+      prerelease:
+        description: "Pre-release type (optional, 'stable' removes pre-release)"
+        required: false
+        type: choice
+        default: "none"
+        options:
+          - none
+          - stable
+          - alpha
+          - beta
+          - rc
+          - post
+          - dev
+
+# Prevent concurrent releases from running
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # Fetch all git history for changelog generation
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.1
+        with:
+          fetch-depth: 0 # Fetch all history for changelog generation
+
+      # Setup Python using version specified in .python-version
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version-file: ".python-version"
+
+      # Install uv for package management and publishing
+      # Cache UV's dependency cache to speed up future runs
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7.2.1
+        with:
+          enable-cache: true
+
+      # Cache the virtual environment to avoid recreating it
+      - name: Cache virtual environment
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
+          restore-keys: |
+            venv-${{ runner.os }}-
+
+      # Create or restore virtual environment
+      # uv will automatically use the cached .venv if it exists
+      - name: Create virtual environment
+        run: |
+          uv venv --python-preference managed
+        env:
+          VIRTUAL_ENV: .venv
+
+      # Bump the package version in pyproject.toml
+      # Handles: stable→stable, stable→prerelease, prerelease→prerelease, prerelease→stable
+      - name: Bump version
+        id: version
+        run: |
+          BUMP_ARGS=""
+
+          # Add version component if specified
+          if [ "${{ inputs.version_component }}" != "none" ]; then
+            BUMP_ARGS="--bump ${{ inputs.version_component }}"
+          fi
+
+          # Add pre-release type if specified
+          if [ "${{ inputs.prerelease }}" != "none" ]; then
+            BUMP_ARGS="$BUMP_ARGS --bump ${{ inputs.prerelease }}"
+          fi
+
+          # Ensure at least one bump option was provided
+          if [ -z "$BUMP_ARGS" ]; then
+            echo "❌ ERROR: Must specify at least one of: version_component or prerelease"
+            exit 1
+          fi
+
+          # Execute version bump
+          uv version $BUMP_ARGS --no-sync
+
+          VERSION=$(uv version --short)
+          echo "new_version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # Generate changelog from git commits using git-cliff action
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v4.7.0
+        with:
+          config: cliff.toml
+          args: --tag "v${{ steps.version.outputs.new_version }}"
+        env:
+          OUTPUT: CHANGELOG.md
+
+      # Verify changelog was generated
+      - name: Verify changelog
+        run: |
+          if [ ! -f CHANGELOG.md ] || [ ! -s CHANGELOG.md ]; then
+            echo "❌ ERROR: CHANGELOG.md was not generated or is empty!"
+            exit 1
+          fi
+          echo "✅ Changelog generated successfully"
+
+      # Build wheel and source distribution (uses bumped version)
+      - name: Build package
+        run: uv build
+
+      # Upload package to PyPI using token from repository secrets
+      # Only after successful publish do we commit and create PR
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
+        run: uv publish
+
+      # Generate requirements.txt from uv.lock for compatibility
+      # Only after successful publish
+      - name: Generate requirements.txt
+        run: uv export --frozen --output-file requirements.txt
+
+      # Create PR to merge release changes back to main
+      # peter-evans/create-pull-request will create the branch and commit the changes
+      # This PR ensures the version bump stays in sync with the published package
+      # Branch protection on main requires approval before merge
+      - name: Create pull request
+        id: pull_request
+        uses: peter-evans/create-pull-request@v8.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "release/v${{ steps.version.outputs.new_version }}"
+          base: main
+          title: "chore(release): v${{ steps.version.outputs.new_version }}"
+          body-path: CHANGELOG.md
+          labels: release
+          commit-message: "chore(release): v${{ steps.version.outputs.new_version }}"
+          add-paths: |
+            pyproject.toml
+            uv.lock
+            CHANGELOG.md
+            requirements.txt
+
+      # Output PR information for manual review
+      - name: PR created successfully
+        if: steps.pull_request.outputs.pull-request-number != ''
+        run: |
+          echo "✅ Release PR created: #${{ steps.pull_request.outputs.pull-request-number }}"
+          echo "📝 URL: ${{ steps.pull_request.outputs.pull-request-url }}"
+          echo "⏳ Please review and merge the PR to complete the release"
+          echo "🏷️  Once merged, create the git tag and GitHub Release"
+
+      # Fail the workflow if PR creation failed
+      # We should not create a GitHub Release without a PR
+      - name: Ensure release PR exists
+        if: steps.pull_request.outputs.pull-request-number == ''
+        run: |
+          echo "❌ Release PR was not created."
+          exit 1
+
+      # Create and push git tag for the new version
+      # Tagging does not depend on merging to main
+      - name: Create git tag
+        if: steps.pull_request.outputs.pull-request-number != ''
+        run: |
+          git tag "v${{ steps.version.outputs.new_version }}"
+          git push origin "v${{ steps.version.outputs.new_version }}"
+
+      # Create GitHub Release with changelog
+      - name: Create GitHub Release
+        if: steps.pull_request.outputs.pull-request-number != ''
+        uses: softprops/action-gh-release@v2.5.0
+        with:
+          tag_name: "v${{ steps.version.outputs.new_version }}"
+          name: "v${{ steps.version.outputs.new_version }}"
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
