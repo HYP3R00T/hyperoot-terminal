@@ -1,24 +1,17 @@
 [project]
-name = "hyperoot"
+name = "hyperoot-terminal"
 version = "0.1.0"
-description = "A CLI persona app that presents my work, projects, and engineering mindset directly in the terminal."
+description = "Add your description here"
 readme = "README.md"
-authors = [{ name = "hyperoot", email = "rajesh@hyperoot.dev" }]
 requires-python = ">=3.13"
-dependencies = ["textual>=6.11.0"]
+dependencies = ["hyperoot", "rajeshdas"]
 
-[project.scripts]
-hyperoot = "hyperoot.main:main"
+[tool.uv.sources]
+hyperoot = { workspace = true }
+rajeshdas = { workspace = true }
 
-[build-system]
-requires = ["uv_build>=0.9.18,<0.10.0"]
-build-backend = "uv_build"
+[tool.uv.workspace]
+members = ["packages/*"]
 
 [dependency-groups]
-dev = [
-    "pre-commit>=4.5.1",
-    "pytest>=9.0.2",
-    "ruff>=0.14.10",
-    "textual-dev>=1.8.0",
-    "ty>=0.0.5",
-]
+dev = ["pre-commit>=4.5.1", "ruff>=0.14.14", "ty>=0.0.14"]
