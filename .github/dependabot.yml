@@ -1,11 +1,12 @@
 version: 2
 updates:
+  # GitHub Actions
   - package-ecosystem: github-actions
-    directory: '/'
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
-      time: '03:00'
+      time: "03:00"
     open-pull-requests-limit: 5
     labels:
       - dependencies
@@ -15,20 +16,26 @@ updates:
     groups:
       dependencies:
         patterns:
-          - '*'
+          - "*"
+    assignees:
+      - HYP3R00T
+
+  # Python
   - package-ecosystem: uv
-    directory: '/'
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
-      time: '03:00'
+      time: "03:00"
     open-pull-requests-limit: 5
     labels:
       - dependencies
-      - ci
+      - python
     commit-message:
       prefix: chore(deps)
     groups:
       dependencies:
         patterns:
-          - '*'
+          - "*"
+    assignees:
+      - HYP3R00T
