@@ -20,7 +20,8 @@
                 "redhat.vscode-yaml",
                 "hverlin.mise-vscode",
                 "hyperoot.settings-organizer",
-                "astral-sh.ty"
+                "astral-sh.ty",
+                "github.vscode-github-actions"
             ]
         }
     }
