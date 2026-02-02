@@ -1,2 +1,6 @@
+from .app import PortfolioApp
+
+
 def main() -> None:
-    print("Hello from rajeshdas!")
+    app = PortfolioApp()
+    app.run()

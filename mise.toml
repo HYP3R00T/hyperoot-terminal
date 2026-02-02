@@ -16,4 +16,4 @@ UV_LINK_MODE = "copy"
 
 [tasks.dev]
 description = "Dev Mode"
-run = 'uv run textual serve "python -m hyperoot.app"' # http://localhost:8000/
+run = "uv run rajeshdas"
