@@ -1,18 +1,28 @@
-from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Static
+from textual.app import App
+from textual.binding import Binding
+
+from rajeshdas.screens import HomeScreen
 
 
 class PortfolioApp(App):
     CSS_PATH = "app.tcss"
 
+    BINDINGS = [
+        Binding("q", "quit", "Quit"),
+    ]
+
     def __init__(self):
         super().__init__()
         self.theme = "catppuccin-mocha"
 
-    def compose(self) -> ComposeResult:
-        yield Header()
-        yield Static("Hello, World!")
-        yield Footer()
+    def on_mount(self) -> None:
+        self.push_screen(HomeScreen())
+
+    def action_open_link(self, url: str) -> None:
+        """Open a URL in the default browser."""
+        import webbrowser
+
+        webbrowser.open(url)
 
 
 if __name__ == "__main__":

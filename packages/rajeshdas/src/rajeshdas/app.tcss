@@ -1,4 +1,26 @@
 /*
  * Custom styles for PortfolioApp
- * Add your custom TCSS rules here as needed.
  */
+
+TabbedContent {
+    height: 1fr;
+}
+
+TabPane {
+    padding: 1 2;
+}
+
+Footer {
+    background: $background;
+}
+
+/* Markdown styling overrides */
+Markdown MarkdownH1 {
+    text-align: left;
+    margin: 0 0 1 0;
+}
+
+Markdown MarkdownH2 {
+    text-align: left;
+    margin: 1 0;
+}
