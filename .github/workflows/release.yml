@@ -70,7 +70,7 @@ jobs:
           fi
 
       - name: Cache virtual environment
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
@@ -112,7 +112,7 @@ jobs:
           echo "new_version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Generate changelog
-        uses: orhun/git-cliff-action@v4.7.0
+        uses: orhun/git-cliff-action@v4.7.1
         with:
           config: cliff.toml
           args: |
@@ -143,7 +143,7 @@ jobs:
 
       - name: Create pull request
         id: pull_request
-        uses: peter-evans/create-pull-request@v8.1.0
+        uses: peter-evans/create-pull-request@v8.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: "release/${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
@@ -170,7 +170,7 @@ jobs:
           git push origin "${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2.5.0
+        uses: softprops/action-gh-release@v3.0.0
         with:
           tag_name: "${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
           name: "${{ inputs.package }} v${{ steps.version.outputs.new_version }}"
