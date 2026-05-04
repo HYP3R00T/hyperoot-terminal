@@ -112,7 +112,7 @@ jobs:
           echo "new_version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Generate changelog
-        uses: orhun/git-cliff-action@v4.7.1
+        uses: orhun/git-cliff-action@v4.8.0
         with:
           config: cliff.toml
           args: |
