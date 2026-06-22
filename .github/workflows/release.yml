@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Fetch all history for changelog generation
 
@@ -170,7 +170,7 @@ jobs:
           git push origin "${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3.0.0
+        uses: softprops/action-gh-release@v3.0.1
         with:
           tag_name: "${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
           name: "${{ inputs.package }} v${{ steps.version.outputs.new_version }}"
