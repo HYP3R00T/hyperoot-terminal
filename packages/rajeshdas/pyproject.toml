@@ -5,7 +5,7 @@ description = "A CLI persona app that showcases Rajesh Das's work, projects, and
 readme = "README.md"
 authors = [{ name = "Rajesh Das", email = "rajesh@hyperoot.dev" }]
 requires-python = ">=3.13"
-dependencies = ["textual>=7.5.0"]
+dependencies = ["textual>=8.2.8"]
 
 [project.scripts]
 rajeshdas = "rajeshdas:main"
