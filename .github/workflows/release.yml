@@ -112,7 +112,7 @@ jobs:
           echo "new_version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Generate changelog
-        uses: orhun/git-cliff-action@v4.8.0
+        uses: orhun/git-cliff-action@v4.9.0
         with:
           config: cliff.toml
           args: |
@@ -170,7 +170,7 @@ jobs:
           git push origin "${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3.0.2
+        uses: softprops/action-gh-release@v3.0.3
         with:
           tag_name: "${{ inputs.package }}-v${{ steps.version.outputs.new_version }}"
           name: "${{ inputs.package }} v${{ steps.version.outputs.new_version }}"
